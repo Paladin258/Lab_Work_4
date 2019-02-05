@@ -1,0 +1,83 @@
+---
+title: "Lab work 4"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Plotting barplots with ggpubr
+
+```{r}
+library(ggpubr)
+d1<- ggplot(diamonds, aes(clarity, fill = cut)) + geom_bar() +
+  theme(axis.text.x = element_text(angle=70, vjust=0.5))
+ggpubr::ggarrange(d1,                                                
+          ggarrange(d1, d1, nrow = 2, labels = c("B", "C")), 
+          ncol = 2, 
+          labels = "A"                                        
+) 
+```
+
+## egg uses similar ggrange function as ggpubr, loading egg causes ggarrange function to be egg specific. 
+
+
+### litter
+
+### Make R script to execute an input file to a outfile plot
+```{r}
+library(ggplot2)
+library(dplyr)
+library(optparse)
+
+
+x = commandArgs(trailing = T)
+infile = x[1]
+outfile = x[2]
+
+y = read.delim(infile, sep = "\t") 
+z <- ggplot(y, aes(clarity, fill = cut)) + geom_bar() +
+  theme(axis.text.x = element_text(angle=70, vjust=0.5))
+
+ggsave(outfile, plot=z, device = "pdf")
+```
+
+
+### Make R script to execute an input file to a outfile plot with option
+```{r}
+option_list <- list(
+              make_option("--infile", type="character", dest = "infile"),
+              make_option("--outfile", type="character", dest = "outfile") )
+              
+
+opt <- parse_args(OptionParser(option_list=option_list))
+
+y = read.delim(opt$infile, sep = "\t") 
+z <- ggplot(y, aes(clarity, fill = cut)) + geom_bar() +
+  theme(axis.text.x = element_text(angle=70, vjust=0.5))
+
+ggsave(opt$outfile, plot=z, device = "pdf")
+```
+
+
+
+###Reticulate with python
+
+```{r}
+library(reticulate)
+use_python("/usr/local/bin/python3")
+pd <- import("pandas", convert=F)
+
+x = data.frame(x=rnorm(100),y=rnorm(100))
+y = pd$DataFrame(r_to_py(x))
+z = py_to_r(y$describe())
+print(z)
+
+
+```
+
+
+#### There are bugs when I tried to do panda function read_csv in R
+
+
